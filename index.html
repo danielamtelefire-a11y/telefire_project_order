@@ -115,13 +115,21 @@ html, body {
   pointer-events: none;
 }
 .brand { display: flex; align-items: center; gap: 14px; z-index: 1; }
-.brand-mark {
-  width: 52px; height: 52px; border-radius: 12px;
-  background: var(--red);
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px rgba(204,33,40,0.4);
+.brand-logo {
+  background: white;
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  flex-shrink: 0;
 }
-.brand-mark svg { width: 28px; height: 28px; fill: white; }
+.brand-logo img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
 .brand-text { color: white; }
 .brand-text .name { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; line-height: 1; }
 .brand-text .tagline { font-size: 12px; opacity: 0.75; margin-top: 4px; letter-spacing: 0.5px; }
@@ -194,6 +202,40 @@ html, body {
   box-shadow: 0 0 0 3px rgba(109,170,220,0.15);
 }
 .input::placeholder { color: var(--text-faint); }
+
+/* ===== DATE QUICK BUTTONS ===== */
+.date-quick-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.date-quick-btn {
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--input-bg);
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.date-quick-btn:hover {
+  border-color: var(--navy);
+  color: var(--text);
+}
+.date-quick-btn.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+[data-theme="dark"] .date-quick-btn.active {
+  background: var(--navy);
+  color: var(--bg);
+}
 
 /* ============================================
    PRODUCTS TABLE
@@ -688,6 +730,153 @@ html, body {
 .toast.show { opacity: 1; }
 .toast.error { background: var(--red); }
 
+/* ===== SUCCESS BANNER (after submit) ===== */
+.success-banner {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(16,185,129,0.25);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  display: none;
+  animation: slideDown 0.4s ease-out;
+}
+.success-banner.show { display: block; }
+.success-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+  pointer-events: none;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.banner-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+.banner-check {
+  width: 56px;
+  height: 56px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255,255,255,0.4);
+}
+.banner-text { flex: 1; }
+.banner-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.banner-subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+}
+.banner-summary {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.22);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+.banner-stat { padding: 4px 0; }
+.banner-stat .label {
+  font-size: 11px;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.banner-stat .value {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.banner-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+.banner-btn-primary {
+  background: white;
+  color: #059669;
+}
+.banner-btn-primary:hover { background: #F0FDF4; transform: translateY(-1px); }
+.banner-btn-secondary {
+  background: rgba(255,255,255,0.18);
+  color: white;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  backdrop-filter: blur(10px);
+}
+.banner-btn-secondary:hover { background: rgba(255,255,255,0.28); }
+.banner-close {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.15s;
+}
+.banner-close:hover { background: rgba(255,255,255,0.28); }
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  body * { visibility: hidden; }
+  #printArea, #printArea * { visibility: visible; }
+  #printArea {
+    position: absolute;
+    top: 0; right: 0; left: 0;
+    padding: 24px;
+    direction: rtl;
+  }
+}
+#printArea { display: none; }
+
 /* ============================================
    TABLET
    ============================================ */
@@ -719,14 +908,12 @@ html, body {
   <!-- HEADER -->
   <header class="header">
     <div class="brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2c-1 4-4 5-4 9a4 4 0 0 0 8 0c0-2-1-3-2-4 0 2-1 3-2 3 0-3 1-5 0-8zm-2 13a4 4 0 0 0 4 4 4 4 0 0 0 4-4c0-1-1-2-2-3-1 3-3 4-6 3z"/>
-        </svg>
+      <div class="brand-logo">
+        <img src="data:image/jpeg;base64,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" alt="Telefire" />
       </div>
       <div class="brand-text">
         <div class="name">טלפייר</div>
-        <div class="tagline">TELEFIRE · מערכות גילוי אש וכיבוי</div>
+        <div class="tagline">מערכות גילוי אש</div>
       </div>
     </div>
     <div class="header-right">
@@ -736,6 +923,31 @@ html, body {
       </button>
     </div>
   </header>
+
+  <!-- SUCCESS BANNER (shown after successful submission) -->
+  <div class="success-banner" id="successBanner">
+    <button class="banner-close" id="bannerCloseBtn" aria-label="סגור">×</button>
+    <div class="banner-top">
+      <div class="banner-check">✓</div>
+      <div class="banner-text">
+        <div class="banner-title">ההזמנה נשלחה בהצלחה</div>
+        <div class="banner-subtitle">המייל נשלח לרשימת התפוצה. הטופס אופס לקראת הזמנה הבאה.</div>
+      </div>
+    </div>
+    <div class="banner-summary" id="bannerSummary">
+      <!-- Filled dynamically by JS -->
+    </div>
+    <div class="banner-actions">
+      <button class="banner-btn banner-btn-primary" id="newOrderBtn">
+        <span>＋</span>
+        <span>הזמנה חדשה</span>
+      </button>
+      <button class="banner-btn banner-btn-secondary" id="printBtn">
+        <span>🖨️</span>
+        <span>הדפס סיכום</span>
+      </button>
+    </div>
+  </div>
 
   <!-- PROJECT DETAILS -->
   <section class="card">
@@ -755,6 +967,12 @@ html, body {
       </div>
       <div class="field">
         <label for="deliveryDate">תאריך אספקה מבוקש<span class="req">*</span></label>
+        <div class="date-quick-row">
+          <button type="button" class="date-quick-btn" data-days="0">היום</button>
+          <button type="button" class="date-quick-btn" data-days="1">מחר</button>
+          <button type="button" class="date-quick-btn" data-days="7">בעוד שבוע</button>
+          <button type="button" class="date-quick-btn" data-days="14">בעוד שבועיים</button>
+        </div>
         <input id="deliveryDate" class="input" type="date" required>
       </div>
     </div>
@@ -805,6 +1023,9 @@ html, body {
   </div>
 
 </div>
+
+<!-- HIDDEN PRINT AREA -->
+<div id="printArea"></div>
 
 <!-- SHARED SKU PICKER MODAL -->
 <div class="sku-modal-backdrop" id="skuModalBackdrop"></div>
@@ -1362,8 +1583,9 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      showToast('ההזמנה נשלחה בהצלחה ✓');
-      setTimeout(() => document.getElementById('resetBtn').click(), 1500);
+      // SUCCESS: show banner with summary + reset
+      showSuccessBanner(payload);
+      resetFormAfterSuccess();
     }
   } catch (err) {
     console.error(err);
@@ -1373,6 +1595,214 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     btn.querySelector('span:first-child').textContent = 'שלח הזמנה';
   }
 });
+
+// ============================================
+// SUCCESS BANNER + PRINT
+// ============================================
+const successBanner = document.getElementById('successBanner');
+const bannerSummary = document.getElementById('bannerSummary');
+const bannerCloseBtn = document.getElementById('bannerCloseBtn');
+const newOrderBtn = document.getElementById('newOrderBtn');
+const printBtn = document.getElementById('printBtn');
+const printArea = document.getElementById('printArea');
+
+let lastOrderPayload = null;
+
+function showSuccessBanner(payload) {
+  lastOrderPayload = payload;
+
+  // Build summary stats
+  const formattedDate = payload.project.deliveryDate
+    ? payload.project.deliveryDate.split('-').reverse().join('/')
+    : '';
+
+  bannerSummary.innerHTML = `
+    <div class="banner-stat">
+      <div class="label">פרויקט</div>
+      <div class="value">${escapeHtml(payload.project.name)}</div>
+    </div>
+    <div class="banner-stat">
+      <div class="label">תאריך אספקה</div>
+      <div class="value">${escapeHtml(formattedDate)}</div>
+    </div>
+    <div class="banner-stat">
+      <div class="label">שורות בהזמנה</div>
+      <div class="value">${payload.summary.lines}</div>
+    </div>
+    <div class="banner-stat">
+      <div class="label">כמות פריטים</div>
+      <div class="value">${payload.summary.totalQty}</div>
+    </div>
+  `;
+
+  successBanner.classList.add('show');
+  // Scroll to top so user sees the banner
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function hideSuccessBanner() {
+  successBanner.classList.remove('show');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function resetFormAfterSuccess() {
+  document.getElementById('projectName').value = '';
+  document.getElementById('projectManager').value = '';
+  document.getElementById('operator').value = '';
+  document.getElementById('deliveryDate').value = '';
+  tbody.innerHTML = '';
+  addRow(); addRow(); addRow();
+}
+
+// Banner button handlers
+bannerCloseBtn.addEventListener('click', hideSuccessBanner);
+newOrderBtn.addEventListener('click', () => {
+  hideSuccessBanner();
+  document.getElementById('projectName').focus();
+});
+
+printBtn.addEventListener('click', () => {
+  if (!lastOrderPayload) return;
+  buildPrintArea(lastOrderPayload);
+  setTimeout(() => window.print(), 100);
+});
+
+function buildPrintArea(payload) {
+  const formattedDate = payload.project.deliveryDate
+    ? payload.project.deliveryDate.split('-').reverse().join('/')
+    : '';
+  const submittedDate = new Date(payload.submittedAt);
+  const submittedStr = submittedDate.toLocaleString('he-IL', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  const productRows = payload.products.map((p, i) => `
+    <tr>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-weight:bold;">${i + 1}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-family:monospace;font-weight:bold;">${escapeHtml(p.sku)}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-size:12px;">${escapeHtml(p.category)}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;">${escapeHtml(p.desc)}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;font-weight:bold;">${p.qty}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;font-size:11px;">${p.shield ? '🛡️ SHIELD' : '—'}</td>
+    </tr>
+  `).join('');
+
+  printArea.innerHTML = `
+    <div style="font-family:Arial,sans-serif;direction:rtl;color:#000;max-width:800px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #172B54;padding-bottom:14px;margin-bottom:20px;">
+        <div>
+          <div style="font-size:24px;font-weight:bold;color:#172B54;">טלפייר</div>
+          <div style="font-size:11px;color:#666;letter-spacing:0.5px;">TELEFIRE · מערכות גילוי אש וכיבוי</div>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-size:16px;font-weight:bold;color:#CC2128;">הזמנה לפרויקט</div>
+          <div style="font-size:11px;color:#666;">הופק: ${submittedStr}</div>
+        </div>
+      </div>
+
+      <div style="background:#F4F6FA;padding:16px;border-radius:8px;margin-bottom:18px;">
+        <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:10px;">פרטי הפרויקט</div>
+        <table style="width:100%;font-size:13px;">
+          <tr>
+            <td style="padding:4px 0;width:50%;">
+              <div style="color:#666;font-size:11px;">שם הפרויקט</div>
+              <div style="font-weight:bold;color:#172B54;font-size:14px;">${escapeHtml(payload.project.name)}</div>
+            </td>
+            <td style="padding:4px 0;width:50%;">
+              <div style="color:#666;font-size:11px;">תאריך אספקה</div>
+              <div style="font-weight:bold;color:#172B54;font-size:14px;">${escapeHtml(formattedDate)}</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:4px 0;">
+              <div style="color:#666;font-size:11px;">מנהל הפרויקט</div>
+              <div style="font-weight:600;">${escapeHtml(payload.project.manager)}</div>
+            </td>
+            <td style="padding:4px 0;">
+              <div style="color:#666;font-size:11px;">מפעיל</div>
+              <div style="font-weight:600;">${escapeHtml(payload.project.operator)}</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:8px;">רשימת מוצרים</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:18px;">
+        <thead>
+          <tr style="background:#172B54;color:white;">
+            <th style="padding:8px 10px;text-align:right;font-weight:bold;">#</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:bold;">מק"ט</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:bold;">סוג</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:bold;">תיאור</th>
+            <th style="padding:8px 10px;text-align:center;font-weight:bold;">כמות</th>
+            <th style="padding:8px 10px;text-align:center;font-weight:bold;">מגן</th>
+          </tr>
+        </thead>
+        <tbody>${productRows}</tbody>
+      </table>
+
+      <div style="background:#172B54;color:white;padding:14px 18px;border-radius:8px;display:flex;justify-content:space-between;">
+        <div>
+          <div style="font-size:10px;opacity:0.8;letter-spacing:0.5px;">סה"כ שורות</div>
+          <div style="font-size:20px;font-weight:bold;">${payload.summary.lines}</div>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-size:10px;opacity:0.8;letter-spacing:0.5px;">סה"כ כמות פריטים</div>
+          <div style="font-size:20px;font-weight:bold;">${payload.summary.totalQty}</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;color:#999;font-size:10px;margin-top:20px;">
+        מסמך זה הופק מטופס ההזמנות הדיגיטלי של טלפייר
+      </div>
+    </div>
+  `;
+}
+
+// ============================================
+// DATE QUICK BUTTONS
+// ============================================
+const dateInput = document.getElementById('deliveryDate');
+const dateQuickButtons = document.querySelectorAll('.date-quick-btn');
+
+function formatDateForInput(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function updateActiveQuickButton() {
+  const value = dateInput.value;
+  dateQuickButtons.forEach(btn => {
+    const days = parseInt(btn.dataset.days, 10);
+    const target = new Date();
+    target.setDate(target.getDate() + days);
+    btn.classList.toggle('active', value === formatDateForInput(target));
+  });
+}
+
+dateQuickButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const days = parseInt(btn.dataset.days, 10);
+    const target = new Date();
+    target.setDate(target.getDate() + days);
+    dateInput.value = formatDateForInput(target);
+    updateActiveQuickButton();
+  });
+});
+
+dateInput.addEventListener('change', updateActiveQuickButton);
 
 // ============================================
 // INIT
