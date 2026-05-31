@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>הזמנה לפרויקט | טלפייר</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   THEMES — LIGHT (default) & DARK
+   ============================================ */
+:root {
+  --navy: #172B54;
+  --navy-dark: #0F1F3D;
+  --navy-light: #2A4173;
+  --red: #CC2128;
+  --red-dark: #A81920;
+  --teal: #6DAADC;
+  --success: #10B981;
+
+  /* Surfaces & text */
+  --bg: #F4F6FA;
+  --card: #FFFFFF;
+  --card-elevated: #FFFFFF;
+  --text: #1A202C;
+  --text-muted: #64748B;
+  --text-faint: #94A3B8;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --border-focus: #6DAADC;
+  --input-bg: #FFFFFF;
+  --input-bg-disabled: #F8FAFC;
+  --row-hover: #FAFBFD;
+  --header-bg: linear-gradient(135deg, #172B54 0%, #2A4173 100%);
+  --header-glow: rgba(204,33,40,0.18);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(23,43,84,0.05);
+  --shadow: 0 4px 12px rgba(23,43,84,0.08);
+  --shadow-lg: 0 12px 32px rgba(23,43,84,0.12);
+  --shadow-dropdown: 0 20px 50px rgba(23,43,84,0.18);
+
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+[data-theme="dark"] {
+  --navy: #6DAADC;
+  --navy-dark: #4A8FC4;
+  --navy-light: #8FBFE3;
+
+  --bg: #0B1426;
+  --card: #131F36;
+  --card-elevated: #1A2942;
+  --text: #E6EDF7;
+  --text-muted: #94A8C4;
+  --text-faint: #647590;
+  --border: #243454;
+  --border-strong: #2F4368;
+  --border-focus: #6DAADC;
+  --input-bg: #1A2942;
+  --input-bg-disabled: #131F36;
+  --row-hover: #1A2942;
+  --header-bg: linear-gradient(135deg, #0F1F3D 0%, #1A2942 100%);
+  --header-glow: rgba(204,33,40,0.25);
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow: 0 4px 12px rgba(0,0,0,0.35);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+  --shadow-dropdown: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.app { max-width: 1280px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+  background: var(--header-bg);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--header-glow), transparent 70%);
+  pointer-events: none;
+}
+.brand { display: flex; align-items: center; gap: 14px; z-index: 1; }
+.brand-mark {
+  width: 52px; height: 52px; border-radius: 12px;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(204,33,40,0.4);
+}
+.brand-mark svg { width: 28px; height: 28px; fill: white; }
+.brand-text { color: white; }
+.brand-text .name { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; line-height: 1; }
+.brand-text .tagline { font-size: 12px; opacity: 0.75; margin-top: 4px; letter-spacing: 0.5px; }
+
+.header-right {
+  display: flex; align-items: center; gap: 14px; z-index: 1;
+}
+.page-title { color: white; font-size: 20px; font-weight: 600; }
+.theme-toggle {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.card-title {
+  font-size: 17px; font-weight: 700; color: var(--text);
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--bg);
+}
+.card-title::before {
+  content: ''; width: 4px; height: 22px;
+  background: var(--red); border-radius: 2px;
+}
+
+.fields { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 640px) { .fields { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+.field label .req { color: var(--red); margin-right: 2px; }
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 16px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: all 0.15s;
+  min-height: 48px;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(109,170,220,0.15);
+}
+.input::placeholder { color: var(--text-faint); }
+
+/* ============================================
+   PRODUCTS TABLE
+   ============================================ */
+.products-card { padding: 24px 20px; }
+
+.products-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+}
+.products-count {
+  font-size: 13px; color: var(--text-muted);
+  background: var(--bg);
+  padding: 4px 12px; border-radius: 20px; font-weight: 500;
+}
+
+.products-scroll { overflow-x: auto; overflow-y: visible; }
+
+.products-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.products-table thead th {
+  background: var(--bg);
+  color: var(--text); font-weight: 600; font-size: 13px;
+  padding: 12px 14px; text-align: right;
+  border: none; white-space: nowrap;
+}
+.products-table thead th:first-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.products-table thead th:last-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+
+.products-table tbody tr { background: var(--card); transition: background 0.15s; }
+.products-table tbody tr:hover { background: var(--row-hover); }
+.products-table tbody td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.products-table tbody td:first-child { padding-right: 14px; }
+.products-table tbody td:last-child { padding-left: 14px; }
+
+.row-number {
+  font-size: 13px; font-weight: 600; color: var(--text-muted);
+  width: 32px; text-align: center;
+}
+
+.sku-wrapper { position: relative; }
+
+/* SKU input acts as a chooser button (opens modal on click) */
+.sku-input {
+  cursor: pointer;
+  padding-left: 36px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'/%3e%3cline x1='21' y1='21' x2='16.65' y2='16.65'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+}
+.sku-input:disabled {
+  cursor: not-allowed;
+  background-image: none;
+}
+.sku-input:not(:disabled):hover {
+  border-color: var(--border-focus);
+  background-color: var(--row-hover);
+}
+
+.cell-cat  { width: 175px; }
+.cell-sku  { width: 200px; position: relative; }
+.cell-desc { width: auto; }
+.cell-qty  { width: 90px; }
+.cell-action { width: 50px; }
+
+.product-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 15px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  min-height: 44px;
+  transition: all 0.15s;
+}
+.product-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(109,170,220,0.15);
+}
+.product-input[readonly] {
+  background: var(--bg); color: var(--text-muted); cursor: default;
+}
+.product-input:disabled {
+  background: var(--input-bg-disabled);
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+.qty-input { text-align: center; font-weight: 600; }
+
+/* ===== CATEGORY SELECT ===== */
+.cat-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 10px 32px 10px 12px;
+  background-color: var(--input-bg);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3e%3cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2364748B' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+  font-weight: 500;
+  cursor: pointer;
+}
+[data-theme="dark"] .cat-select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3e%3cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2394A8C4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+}
+.cat-select[data-filled] {
+  background-color: var(--cat-bg);
+  border-color: var(--cat-border);
+  color: var(--cat-color);
+  font-weight: 700;
+}
+.cat-select[data-filled]:focus { box-shadow: 0 0 0 3px var(--cat-shadow); }
+
+/* ============================================
+   SKU PICKER MODAL (centered popup with search)
+   ============================================ */
+.sku-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.sku-modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+[data-theme="dark"] .sku-modal-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.sku-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.96);
+  width: min(560px, 92vw);
+  max-height: 80vh;
+  background: var(--card-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-dropdown);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  overflow: hidden;
+}
+.sku-modal.open {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.sku-modal-header {
+  padding: 18px 20px 14px;
+  background: var(--cat-bg, var(--bg));
+  border-bottom: 1px solid var(--cat-border, var(--border));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sku-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cat-color, var(--text));
+}
+.sku-modal-title .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cat-color, var(--text));
+}
+.sku-modal-title .count {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-right: 4px;
+}
+.sku-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 22px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.sku-modal-close:hover {
+  background: var(--card);
+  color: var(--text);
+}
+
+.sku-modal-search-wrap {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card-elevated);
+}
+.sku-modal-search {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  font-family: inherit;
+  font-size: 15px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  transition: all 0.15s;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'/%3e%3cline x1='21' y1='21' x2='16.65' y2='16.65'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: left 14px center;
+}
+.sku-modal-search:focus {
+  outline: none;
+  border-color: var(--cat-color, var(--border-focus));
+  box-shadow: 0 0 0 3px var(--cat-shadow, rgba(109,170,220,0.15));
+}
+.sku-modal-search::placeholder { color: var(--text-faint); }
+
+.sku-modal-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.sku-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  border-right: 3px solid transparent;
+  transition: background 0.1s, border-color 0.1s;
+}
+.sku-option + .sku-option { margin-top: 2px; }
+.sku-option:hover,
+.sku-option.active {
+  background: var(--cat-bg-soft, var(--row-hover));
+  border-right-color: var(--cat-color, var(--navy));
+}
+.sku-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+.sku-option-sku {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cat-color, var(--text));
+  letter-spacing: 0.3px;
+}
+.sku-option-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.sku-option-arrow {
+  font-size: 18px;
+  color: var(--text-faint);
+  opacity: 0;
+  transition: opacity 0.1s;
+  flex-shrink: 0;
+}
+.sku-option:hover .sku-option-arrow,
+.sku-option.active .sku-option-arrow {
+  opacity: 1;
+  color: var(--cat-color);
+}
+.sku-modal-empty {
+  padding: 36px 16px;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+.sku-modal-empty .icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.sku-modal-footer {
+  padding: 10px 20px;
+  font-size: 11px;
+  color: var(--text-faint);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.sku-modal-footer kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin: 0 2px;
+}
+
+/* Mobile: full-screen modal */
+@media (max-width: 640px) {
+  .sku-modal {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    top: 0;
+    left: 0;
+    transform: scale(1);
+    border-radius: 0;
+    border: none;
+  }
+  .sku-modal.open {
+    transform: scale(1);
+  }
+}
+
+.sku-modal-list::-webkit-scrollbar { width: 8px; }
+.sku-modal-list::-webkit-scrollbar-track { background: transparent; }
+.sku-modal-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+/* ===== INLINE SHIELD CHIP (CONDITIONAL FOR PANELS) ===== */
+.shield-mini {
+  margin-top: 6px;
+  display: none;
+}
+.shield-mini.active { display: block; }
+.shield-mini label {
+  display: inline-flex;
+  cursor: pointer;
+  user-select: none;
+}
+.shield-mini input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.shield-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: all 0.15s;
+  line-height: 1.6;
+}
+.shield-chip:hover { border-color: var(--text-muted); }
+.shield-chip .icon { font-size: 11px; opacity: 0.7; }
+.shield-mini input:checked + .shield-chip {
+  background: rgba(23,43,84,0.1);
+  color: #172B54;
+  border-color: rgba(23,43,84,0.35);
+  font-weight: 600;
+}
+.shield-mini input:checked + .shield-chip .icon { opacity: 1; }
+.shield-mini input:focus-visible + .shield-chip {
+  box-shadow: 0 0 0 2px rgba(109,170,220,0.4);
+}
+[data-theme="dark"] .shield-mini input:checked + .shield-chip {
+  background: rgba(109,170,220,0.18);
+  color: #6DAADC;
+  border-color: rgba(109,170,220,0.4);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn-remove {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  font-size: 18px;
+}
+.btn-remove:hover {
+  background: rgba(204,33,40,0.1);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: 48px;
+}
+.btn-primary {
+  background: var(--red);
+  color: white;
+  box-shadow: 0 4px 12px rgba(204,33,40,0.25);
+}
+.btn-primary:hover { background: var(--red-dark); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(204,33,40,0.35); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  background: var(--card);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { background: var(--bg); border-color: var(--text-muted); }
+
+.btn-add {
+  background: var(--navy);
+  color: white;
+  width: 100%;
+  margin-top: 14px;
+}
+[data-theme="dark"] .btn-add { background: var(--card-elevated); border: 1.5px dashed var(--border-strong); color: var(--text); }
+[data-theme="dark"] .btn-add:hover { background: var(--card); border-color: var(--navy); color: var(--navy); }
+
+/* ============================================
+   SUBMIT BAR
+   ============================================ */
+.submit-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px 24px;
+  margin-top: 20px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border: 1px solid var(--border);
+}
+.submit-summary { font-size: 14px; color: var(--text-muted); }
+.submit-summary strong { color: var(--text); font-weight: 700; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  top: 24px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--success);
+  color: white;
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.error { background: var(--red); }
+
+/* ============================================
+   TABLET
+   ============================================ */
+@media (max-width: 900px) {
+  .app { padding: 16px 12px 80px; }
+  .header { padding: 20px 22px; }
+  .card { padding: 20px 16px; }
+  .cell-cat { width: 150px; }
+  .cell-sku { width: 170px; }
+  .cell-qty { width: 75px; }
+  .products-table thead th { font-size: 12px; padding: 10px 8px; }
+  .product-input { font-size: 14px; padding: 9px 10px; }
+}
+
+@media (max-width: 700px) {
+  .cell-desc, .col-desc { display: none; }
+  .cell-cat { width: 130px; }
+}
+
+.products-scroll::-webkit-scrollbar { height: 8px; }
+.products-scroll::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
+.products-scroll::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2c-1 4-4 5-4 9a4 4 0 0 0 8 0c0-2-1-3-2-4 0 2-1 3-2 3 0-3 1-5 0-8zm-2 13a4 4 0 0 0 4 4 4 4 0 0 0 4-4c0-1-1-2-2-3-1 3-3 4-6 3z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="name">טלפייר</div>
+        <div class="tagline">TELEFIRE · מערכות גילוי אש וכיבוי</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="page-title">📋 הזמנה לפרויקט</div>
+      <button class="theme-toggle" id="themeToggle" aria-label="החלף תצוגה" title="החלף תצוגה">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PROJECT DETAILS -->
+  <section class="card">
+    <div class="card-title">פרטי הפרויקט</div>
+    <div class="fields">
+      <div class="field">
+        <label for="projectName">שם הפרויקט<span class="req">*</span></label>
+        <input id="projectName" class="input" type="text" placeholder="לדוגמה: בנייני מגורים – רמת השרון" required>
+      </div>
+      <div class="field">
+        <label for="projectManager">שם מנהל הפרויקט<span class="req">*</span></label>
+        <input id="projectManager" class="input" type="text" placeholder="שם מלא" required>
+      </div>
+      <div class="field">
+        <label for="operator">שם המפעיל<span class="req">*</span></label>
+        <input id="operator" class="input" type="text" placeholder="שם מלא" required>
+      </div>
+      <div class="field">
+        <label for="deliveryDate">תאריך אספקה מבוקש<span class="req">*</span></label>
+        <input id="deliveryDate" class="input" type="date" required>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="card products-card">
+    <div class="products-header">
+      <div class="card-title" style="margin-bottom: 0; padding-bottom: 0; border: none;">רשימת מוצרים</div>
+      <span class="products-count" id="productsCount">0 שורות</span>
+    </div>
+
+    <div class="products-scroll">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th style="width:32px;">#</th>
+            <th>סוג המוצר</th>
+            <th>מק"ט</th>
+            <th class="col-desc">תיאור</th>
+            <th style="text-align:center;">כמות</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="productsBody"></tbody>
+      </table>
+    </div>
+
+    <button type="button" class="btn btn-add" id="addRowBtn">
+      <span style="font-size:20px;">＋</span>
+      <span>הוסף שורה</span>
+    </button>
+  </section>
+
+  <!-- SUBMIT BAR -->
+  <div class="submit-bar">
+    <div class="submit-summary">
+      סה"כ פריטים: <strong id="totalItemsLabel">0</strong> ·
+      כמות כוללת: <strong id="totalQtyLabel">0</strong>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button type="button" class="btn btn-secondary" id="resetBtn">איפוס</button>
+      <button type="button" class="btn btn-primary" id="submitBtn">
+        <span>שלח הזמנה</span>
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- SHARED SKU PICKER MODAL -->
+<div class="sku-modal-backdrop" id="skuModalBackdrop"></div>
+<div class="sku-modal" id="skuModal" role="dialog" aria-modal="true">
+  <div class="sku-modal-header">
+    <div class="sku-modal-title">
+      <span class="dot"></span>
+      <span id="skuModalTitle">בחר מוצר</span>
+      <span class="count" id="skuModalCount"></span>
+    </div>
+    <button type="button" class="sku-modal-close" id="skuModalClose" aria-label="סגור">×</button>
+  </div>
+  <div class="sku-modal-search-wrap">
+    <input type="text" class="sku-modal-search" id="skuModalSearch"
+           placeholder="חפש לפי מק&quot;ט או תיאור..." autocomplete="off">
+  </div>
+  <div class="sku-modal-list" id="skuModalList"></div>
+  <div class="sku-modal-footer">
+    <span><kbd>↑</kbd><kbd>↓</kbd> ניווט · <kbd>Enter</kbd> בחר · <kbd>Esc</kbd> סגור</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================
+// CONFIG
+// ============================================
+const WEBHOOK_URL = "https://hook.eu2.make.com/m42l88s242g5g31allxxk9gk4mk3i8rh";
+
+// ============================================
+// THEME (DARK MODE)
+// ============================================
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeIcon.textContent = '☀️';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    themeIcon.textContent = '🌙';
+  }
+}
+
+function getStoredTheme() {
+  try { return localStorage.getItem('tf-theme') || 'light'; }
+  catch { return 'light'; }
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem('tf-theme', next); } catch {}
+});
+
+applyTheme(getStoredTheme());
+
+// ============================================
+// CATEGORIES
+// ============================================
+const CATEGORIES = {
+  panels:      { label: "רכזות ולוחות",      color: "#172B54", colorDark: "#6DAADC" },
+  detectors:   { label: "גלאים ובסיסים",     color: "#EA580C", colorDark: "#FB923C" },
+  alarms:      { label: "לחצנים ומנורות",     color: "#CC2128", colorDark: "#F87171" },
+  phones:      { label: "טלפון כבאים",        color: "#7C3AED", colorDark: "#A78BFA" },
+  audio:       { label: "כריזה ורמקולים",     color: "#0891B2", colorDark: "#22D3EE" },
+  modules:     { label: "מודולים וכרטיסים",  color: "#059669", colorDark: "#34D399" },
+  power:       { label: "ספקי כוח ומצברים",  color: "#CA8A04", colorDark: "#FBBF24" },
+  accessories: { label: "קופסאות ואביזרים",  color: "#475569", colorDark: "#94A3B8" },
+  cables:      { label: "כבלים",              color: "#92400E", colorDark: "#D97706" },
+  conduits:    { label: "צינורות ותעלות",    color: "#DB2777", colorDark: "#F472B6" }
+};
+
+function catColor(key) {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const c = CATEGORIES[key];
+  return isDark ? c.colorDark : c.color;
+}
+
+// ============================================
+// PRODUCTS
+// ============================================
+const PRODUCTS = [
+  {sku:"ADR-7000/1", desc:"רכזת אנלוגית ל-127 כתובות", cat:"panels"},
+  {sku:"ADR-7001", desc:"מכלול הרחבה ל- 7000", cat:"panels"},
+  {sku:"ADR-7002", desc:"מעגל קו אנלוגי ל- 127 כתובות REV-B", cat:"panels"},
+  {sku:"RM-7000", desc:"לוח משנה לרכזות אנלוגיות 7000 עברית", cat:"panels"},
+  {sku:"ADR-7000/4", desc:"רכזת אנלוגית ל-508 כתובות", cat:"panels"},
+  {sku:"ADR-7000/8", desc:"רכזת אנלוגית 1016 כתובות", cat:"panels"},
+
+  {sku:"TFB-180", desc:"בסיס לגלאי רגיל + כתובתי", cat:"detectors"},
+  {sku:"TFB-180CA", desc:"מתאם לבסיס גלאי -חדש-", cat:"detectors"},
+  {sku:"TFB-CAB", desc:"תושבת בסיס גלאי ללוח חשמל", cat:"detectors"},
+  {sku:"TFO-480A", desc:"גלאי פוטואלקטרי כתובתי אנלוגי", cat:"detectors"},
+  {sku:"DTH-800", desc:"קופסא+בסיס לתעלות מז\"א לגלאי אנלוגי/קונבנציונלי", cat:"detectors"},
+
+  {sku:"TFL-1AN", desc:"מנורת סימון מהבהבת למע' אנלוגית", cat:"alarms"},
+  {sku:"TFS-314", desc:"צופר-נצנץ פנימי לבן ערוצים נפרדים (מרובע)", cat:"alarms"},
+  {sku:"TPB-800ASR", desc:"לחצן ניפוץ אנלוגי אסכרוני", cat:"alarms"},
+  {sku:"FLAP", desc:"מכסה מגן שקוף ללחצן", cat:"alarms"},
+
+  {sku:"TFP-100T", desc:"שקע לטלפון כבאים", cat:"phones"},
+  {sku:"TFP-7000", desc:"עמדת שליטה לטלפון כבאים ל- 24 שפופרות", cat:"phones"},
+  {sku:"TFP-7000/24", desc:"הרחבה לטלפון כבאים עד ל- 24 כתובות", cat:"phones"},
+  {sku:"TFP-806", desc:"מכלול שקע כתובתי לטלפון כבאים", cat:"phones"},
+  {sku:"TFP-1CP", desc:"עמדת שפופרת קבועה כתובתית טלפייר", cat:"phones"},
+  {sku:"TFP-1", desc:"שפופרת לטלפון כבאים", cat:"phones"},
+  {sku:"TFP-76C", desc:"יחידת אחסון לעד 6 שפופרות (ריקה) לרכזת 7000", cat:"phones"},
+
+  {sku:"TFV-400", desc:"מערכת כריזת חירום, 6 אזורים, 2x200W", cat:"audio"},
+  {sku:"TFMIC-30400A", desc:"PKM1+ECM-30A - מיקרופון חירום בקופסא (PTT) עבור TFV-400", cat:"audio"},
+  {sku:"TLS-T1001", desc:"שופר IP66 30W", cat:"audio"},
+  {sku:"TFAB-160W", desc:"SB-624EI - מגבר בוסטר 160 וואט", cat:"audio"},
+  {sku:"TFEVS-6400", desc:"כריזת חירום משולבת 250 וואט (6 אזורים, 6 הודעות)", cat:"audio"},
+  {sku:"BSS-SP0015", desc:"שופר חיצוני 15W וואט", cat:"audio"},
+  {sku:"BSS-SWG6C", desc:"רמקול 6\" תקרתי גריל לבן", cat:"audio"},
+  {sku:"BSS-LB10", desc:"רמקול קיר 6W לבן קטן", cat:"audio"},
+  {sku:"BSS-SP0610", desc:"רמקול פרוז'קטור 6-10W וואט", cat:"audio"},
+  {sku:"TLS-SC30", desc:"SC-30 - רמקול שופר 30 וואט IP66", cat:"audio"},
+  {sku:"TLS-CL6RIN", desc:"HSR127T - רמקול שקוע 6 אינץ' 0.5-1-2 וואט", cat:"audio"},
+  {sku:"TLS-W", desc:"רמקול קיר 3 אינץ' 0.5-1-2-4 וואט (25/100 וולט)", cat:"audio"},
+
+  {sku:"ADR-705", desc:"מעגל כניסה למפסקי זרימה 2 כניסות ADR-705 REV-A", cat:"modules"},
+  {sku:"ADR-805A", desc:"מעגל כניסה למפסקי זרימה אסכרוני ADR-805A REV C2", cat:"modules"},
+  {sku:"ADR-723", desc:"מודול מבוא/מוצא ADR-723", cat:"modules"},
+  {sku:"ADR-741", desc:"כרטיס ממסר למערכת כתובתית אנלוגית ADR-741 REV-A", cat:"modules"},
+  {sku:"LON-7000", desc:"כרטיס תקשורת 7000 MASTER/SLAVE", cat:"modules"},
+
+  {sku:"TB-90", desc:"מצבר 12V 9AH", cat:"power"},
+  {sku:"TB-70", desc:"מצבר 12V 7AH", cat:"power"},
+  {sku:"TPS-74A", desc:"ספק כוח כתובתי אנלוגי מזווד 7000", cat:"power"},
+
+  {sku:"BOX-DI4130", desc:"קופסא DI-4-130 360*250*130 IP-65 מכסה אטום", cat:"accessories"},
+  {sku:"DTH1077", desc:"קופסא D-2 80X150X190 מכסה אטום עם כניסות", cat:"accessories"},
+  {sku:"TDH-607", desc:"מגנט קיר אוחז לדלת (50 ק\"ג) 11FF פלסטי", cat:"accessories"},
+  {sku:"TDM-500IN", desc:"חייגן אוטומטי קווי חכם NEW", cat:"accessories"},
+
+  {sku:"TFC408", desc:"כבל גילוי אש 0.8*4 אדום - חבילות של 200 מטר", cat:"cables"},
+  {sku:"TFC208", desc:"כבל גילוי אש 0.8*2 אדום - חבילות של 200 מטר", cat:"cables"},
+  {sku:"FRC0408", desc:"כבל חסין אש 4X0.8 כתום - כל גיד בצבע אחר", cat:"cables"},
+  {sku:"TFC201008R", desc:"כבל גילוי אש 0.8*2*10 אדום-חבילה של 200-250 מטר", cat:"cables"},
+  {sku:"TFCAT7S", desc:"כבל CAT7 4X2X23/1 (ג'גה) מסוכך", cat:"cables"},
+
+  {sku:"TFC-0020", desc:"צינור מריכף 20 מ\"מ אדום - חבילה של 100 מטר", cat:"conduits"},
+  {sku:"TMRR34", desc:"צינור מרירון תיקני 20 מ\"מ - יחידה של 3 מטר", cat:"conduits"},
+  {sku:"TFC-020", desc:"שלה פלסטיק לצינור 20 מ\"מ - חבילה של 100 יח'", cat:"conduits"},
+  {sku:"BCF-SR11R", desc:"צינור שרשורי אדום PG11 - חבילה של 30 מטר", cat:"conduits"},
+  {sku:"BCF-SR9R", desc:"צינור שרשורי אדום PG9 - חבילה של 30 מטר", cat:"conduits"},
+  {sku:"BCF-206060", desc:"תעלה P.V.C 60*60 עם מכסה - מטר", cat:"conduits"},
+  {sku:"TFC-PT12060", desc:"תעלת פי וי סי 60*120 מ\"מ", cat:"conduits"}
+];
+
+const skuMap = Object.fromEntries(PRODUCTS.map(p => [p.sku.toUpperCase(), p]));
+
+// ============================================
+// ELEMENTS
+// ============================================
+const tbody = document.getElementById('productsBody');
+const productsCount = document.getElementById('productsCount');
+const totalItemsLabel = document.getElementById('totalItemsLabel');
+const totalQtyLabel = document.getElementById('totalQtyLabel');
+const toast = document.getElementById('toast');
+
+// ============================================
+// CATEGORY SELECT STYLING
+// ============================================
+function styleCatSelect(sel) {
+  const v = sel.value;
+  if (v && CATEGORIES[v]) {
+    const c = catColor(v);
+    sel.style.setProperty('--cat-bg', c + '14');
+    sel.style.setProperty('--cat-border', c + '50');
+    sel.style.setProperty('--cat-color', c);
+    sel.style.setProperty('--cat-shadow', c + '25');
+    sel.dataset.filled = '1';
+  } else {
+    delete sel.dataset.filled;
+    sel.style.removeProperty('--cat-bg');
+    sel.style.removeProperty('--cat-border');
+    sel.style.removeProperty('--cat-color');
+    sel.style.removeProperty('--cat-shadow');
+  }
+}
+
+// ============================================
+// GLOBAL SKU PICKER MODAL
+// ============================================
+const skuModal = document.getElementById('skuModal');
+const skuModalBackdrop = document.getElementById('skuModalBackdrop');
+const skuModalSearch = document.getElementById('skuModalSearch');
+const skuModalList = document.getElementById('skuModalList');
+const skuModalTitle = document.getElementById('skuModalTitle');
+const skuModalCount = document.getElementById('skuModalCount');
+const skuModalClose = document.getElementById('skuModalClose');
+
+let modalState = {
+  category: null,
+  onPick: null,
+  activeIndex: -1,
+  options: []
+};
+
+function openSkuModal(category, onPick) {
+  modalState.category = category;
+  modalState.onPick = onPick;
+  modalState.activeIndex = -1;
+
+  const c = catColor(category);
+  // Apply category color to modal
+  skuModal.style.setProperty('--cat-color', c);
+  skuModal.style.setProperty('--cat-bg', c + '14');
+  skuModal.style.setProperty('--cat-bg-soft', c + '0C');
+  skuModal.style.setProperty('--cat-border', c + '30');
+  skuModal.style.setProperty('--cat-shadow', c + '25');
+
+  skuModalTitle.textContent = CATEGORIES[category].label;
+  skuModalSearch.value = '';
+  rebuildModalList();
+
+  skuModalBackdrop.classList.add('open');
+  skuModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Focus search after animation
+  setTimeout(() => skuModalSearch.focus(), 50);
+}
+
+function closeSkuModal() {
+  skuModalBackdrop.classList.remove('open');
+  skuModal.classList.remove('open');
+  document.body.style.overflow = '';
+  modalState.onPick = null;
+  modalState.category = null;
+}
+
+function rebuildModalList() {
+  const cat = modalState.category;
+  if (!cat) return;
+  const query = skuModalSearch.value.trim().toLowerCase();
+  modalState.options = PRODUCTS.filter(p => p.cat === cat && (
+    !query ||
+    p.sku.toLowerCase().includes(query) ||
+    p.desc.toLowerCase().includes(query)
+  ));
+
+  skuModalCount.textContent = `(${modalState.options.length} מוצרים)`;
+  skuModalList.innerHTML = '';
+
+  if (modalState.options.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'sku-modal-empty';
+    empty.innerHTML = `<span class="icon">🔍</span>לא נמצאו מוצרים תואמים`;
+    skuModalList.appendChild(empty);
+    modalState.activeIndex = -1;
+    return;
+  }
+
+  modalState.options.forEach((p, i) => {
+    const opt = document.createElement('div');
+    opt.className = 'sku-option';
+    opt.dataset.index = i;
+    opt.innerHTML = `
+      <div class="sku-option-text">
+        <div class="sku-option-sku">${p.sku}</div>
+        <div class="sku-option-desc">${p.desc}</div>
+      </div>
+      <span class="sku-option-arrow">←</span>
+    `;
+    opt.addEventListener('click', () => pickOption(i));
+    opt.addEventListener('mouseenter', () => setModalActive(i));
+    skuModalList.appendChild(opt);
+  });
+
+  modalState.activeIndex = -1;
+}
+
+function setModalActive(i) {
+  modalState.activeIndex = i;
+  [...skuModalList.querySelectorAll('.sku-option')].forEach((el, idx) => {
+    el.classList.toggle('active', idx === i);
+  });
+  if (i >= 0) {
+    const el = skuModalList.querySelector(`.sku-option[data-index="${i}"]`);
+    if (el) el.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+function pickOption(i) {
+  const p = modalState.options[i];
+  if (!p) return;
+  const cb = modalState.onPick;
+  closeSkuModal();
+  if (cb) cb(p);
+}
+
+// Modal event listeners
+skuModalSearch.addEventListener('input', rebuildModalList);
+skuModalClose.addEventListener('click', closeSkuModal);
+skuModalBackdrop.addEventListener('click', closeSkuModal);
+
+skuModalSearch.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    setModalActive(Math.min(modalState.activeIndex + 1, modalState.options.length - 1));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    setModalActive(Math.max(modalState.activeIndex - 1, 0));
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (modalState.activeIndex >= 0) pickOption(modalState.activeIndex);
+    else if (modalState.options.length === 1) pickOption(0);
+  } else if (e.key === 'Escape') {
+    e.preventDefault();
+    closeSkuModal();
+  }
+});
+
+// ============================================
+// ROWS
+// ============================================
+let rowId = 0;
+
+function addRow() {
+  rowId++;
+  const tr = document.createElement('tr');
+  tr.dataset.rid = rowId;
+
+  let optionsHtml = '<option value="">בחר סוג...</option>';
+  Object.entries(CATEGORIES).forEach(([key, cat]) => {
+    optionsHtml += `<option value="${key}">${cat.label}</option>`;
+  });
+
+  tr.innerHTML = `
+    <td class="row-number"></td>
+    <td class="cell-cat">
+      <select class="product-input cat-select">${optionsHtml}</select>
+    </td>
+    <td class="cell-sku">
+      <div class="sku-wrapper">
+        <input type="text" class="product-input sku-input"
+               placeholder="בחר סוג קודם"
+               autocomplete="off"
+               readonly
+               disabled>
+      </div>
+      <div class="shield-mini">
+        <label>
+          <input type="checkbox" class="shield-checkbox">
+          <span class="shield-chip">
+            <span class="icon">🛡️</span>
+            <span>SHIELD</span>
+          </span>
+        </label>
+      </div>
+    </td>
+    <td class="cell-desc">
+      <input type="text" class="product-input desc-input" readonly placeholder="—" value="">
+    </td>
+    <td class="cell-qty">
+      <input type="number" class="product-input qty-input" min="1" step="1" placeholder="0">
+    </td>
+    <td class="cell-action">
+      <button type="button" class="btn-remove" title="מחק שורה" aria-label="מחק">×</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+
+  const catSelect = tr.querySelector('.cat-select');
+  const skuInput = tr.querySelector('.sku-input');
+  const descInput = tr.querySelector('.desc-input');
+  const qtyInput = tr.querySelector('.qty-input');
+  const removeBtn = tr.querySelector('.btn-remove');
+  const shieldMini = tr.querySelector('.shield-mini');
+  const shieldCheckbox = tr.querySelector('.shield-checkbox');
+
+  // Defensive: ensure shield checkbox NEVER affects SKU
+  shieldCheckbox.addEventListener('click', (e) => e.stopPropagation());
+  shieldCheckbox.addEventListener('change', (e) => e.stopPropagation());
+
+  // SKU input opens the modal
+  skuInput.addEventListener('click', () => {
+    if (skuInput.disabled) return;
+    const cat = catSelect.value;
+    if (!cat) return;
+    openSkuModal(cat, (product) => {
+      skuInput.value = product.sku;
+      descInput.value = product.desc;
+      if (!qtyInput.value) qtyInput.focus();
+      updateSummary();
+    });
+  });
+
+  catSelect.addEventListener('change', () => {
+    styleCatSelect(catSelect);
+    const cat = catSelect.value;
+    skuInput.value = '';
+    descInput.value = '';
+    if (cat) {
+      skuInput.disabled = false;
+      skuInput.placeholder = 'לחץ לבחירת מק"ט';
+    } else {
+      skuInput.disabled = true;
+      skuInput.placeholder = 'בחר סוג קודם';
+    }
+    // Show/hide shield chip
+    if (cat === 'panels') {
+      shieldMini.classList.add('active');
+    } else {
+      shieldMini.classList.remove('active');
+      shieldCheckbox.checked = false;
+    }
+    updateSummary();
+  });
+
+  qtyInput.addEventListener('input', updateSummary);
+
+  removeBtn.addEventListener('click', () => {
+    tr.remove();
+    renumber();
+    updateSummary();
+  });
+
+  renumber();
+  updateSummary();
+  return tr;
+}
+
+function renumber() {
+  [...tbody.querySelectorAll('tr')].forEach((tr, i) => {
+    tr.querySelector('.row-number').textContent = i + 1;
+  });
+}
+
+function updateSummary() {
+  const rows = [...tbody.querySelectorAll('tr')];
+  let items = 0, totalQty = 0;
+  rows.forEach(tr => {
+    const sku = tr.querySelector('.sku-input').value.trim();
+    const qty = parseInt(tr.querySelector('.qty-input').value, 10) || 0;
+    if (sku && qty > 0) { items++; totalQty += qty; }
+  });
+  productsCount.textContent = `${rows.length} ${rows.length === 1 ? 'שורה' : 'שורות'}`;
+  totalItemsLabel.textContent = items;
+  totalQtyLabel.textContent = totalQty;
+}
+
+function showToast(msg, type = 'success') {
+  toast.textContent = msg;
+  toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ============================================
+// ACTIONS
+// ============================================
+document.getElementById('addRowBtn').addEventListener('click', () => {
+  const tr = addRow();
+  tr.querySelector('.cat-select').focus();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('לאפס את כל הטופס?')) return;
+  document.getElementById('projectName').value = '';
+  document.getElementById('projectManager').value = '';
+  document.getElementById('operator').value = '';
+  document.getElementById('deliveryDate').value = '';
+  tbody.innerHTML = '';
+  addRow(); addRow(); addRow();
+});
+
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const projectName = document.getElementById('projectName').value.trim();
+  const projectManager = document.getElementById('projectManager').value.trim();
+  const operator = document.getElementById('operator').value.trim();
+  const deliveryDate = document.getElementById('deliveryDate').value;
+
+  if (!projectName || !projectManager || !operator || !deliveryDate) {
+    showToast('יש למלא את כל פרטי הפרויקט', 'error');
+    return;
+  }
+
+  const products = [];
+  let invalidRow = false;
+  const productRows = [...tbody.querySelectorAll('tr')];
+  productRows.forEach(tr => {
+    const cat = tr.querySelector('.cat-select').value;
+    const sku = tr.querySelector('.sku-input').value.trim();
+    const qty = parseInt(tr.querySelector('.qty-input').value, 10);
+    if (!cat && !sku && !qty) return;
+    const product = skuMap[sku.toUpperCase()];
+    if (!cat || !product || product.cat !== cat || !(qty > 0)) {
+      invalidRow = true; return;
+    }
+    const entry = {
+      sku: product.sku,
+      desc: product.desc,
+      category: CATEGORIES[product.cat].label,
+      categoryKey: product.cat,
+      qty
+    };
+    if (product.cat === 'panels') {
+      const shieldCheckbox = tr.querySelector('.shield-checkbox');
+      if (shieldCheckbox) {
+        entry.shield = shieldCheckbox.checked;
+      }
+    }
+    products.push(entry);
+  });
+
+  if (invalidRow) {
+    showToast('יש שורה לא תקינה — בדוק סוג, מק"ט וכמות', 'error');
+    return;
+  }
+  if (products.length === 0) {
+    showToast('יש להוסיף לפחות מוצר אחד', 'error');
+    return;
+  }
+
+  const byCategory = {};
+  products.forEach(p => {
+    byCategory[p.category] = (byCategory[p.category] || 0) + p.qty;
+  });
+
+  const payload = {
+    submittedAt: new Date().toISOString(),
+    project: {
+      name: projectName,
+      manager: projectManager,
+      operator: operator,
+      deliveryDate: deliveryDate
+    },
+    products,
+    summary: {
+      lines: products.length,
+      totalQty: products.reduce((s, p) => s + p.qty, 0),
+      byCategory
+    }
+  };
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.querySelector('span:first-child').textContent = 'שולח...';
+
+  try {
+    if (WEBHOOK_URL === "YOUR_MAKE_WEBHOOK_URL_HERE") {
+      console.log('Payload (no webhook configured):', payload);
+      showToast('הטופס תקין — אבל לא הוגדר webhook. בדוק קונסול.', 'error');
+    } else {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      showToast('ההזמנה נשלחה בהצלחה ✓');
+      setTimeout(() => document.getElementById('resetBtn').click(), 1500);
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('שגיאה בשליחה — נסה שוב', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.querySelector('span:first-child').textContent = 'שלח הזמנה';
+  }
+});
+
+// ============================================
+// INIT
+// ============================================
+addRow();
+addRow();
+addRow();
+</script>
+</body>
+</html>
