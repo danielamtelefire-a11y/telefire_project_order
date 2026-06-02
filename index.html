@@ -203,6 +203,63 @@ html, body {
 }
 .input::placeholder { color: var(--text-faint); }
 
+/* ===== NOTES TEXTAREA ===== */
+.notes-textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+/* ===== SHIPPING OPTIONS ===== */
+.shipping-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.shipping-option { cursor: pointer; display: block; }
+.shipping-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.shipping-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+  min-height: 64px;
+}
+.shipping-card:hover {
+  border-color: var(--text-muted);
+}
+.shipping-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.shipping-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.3;
+}
+.shipping-option input:checked + .shipping-card {
+  background: rgba(204,33,40,0.06);
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(204,33,40,0.15);
+}
+.shipping-option input:checked + .shipping-card .shipping-label {
+  color: var(--red);
+  font-weight: 700;
+}
+[data-theme="dark"] .shipping-option input:checked + .shipping-card {
+  background: rgba(204,33,40,0.18);
+}
+
 /* ===== DATE QUICK BUTTONS ===== */
 .date-quick-row {
   display: flex;
@@ -981,6 +1038,60 @@ html, body {
     </div>
   </section>
 
+  <!-- SHIPPING METHOD -->
+  <section class="card">
+    <div class="card-title" data-i18n="shippingTitle">אופן משלוח</div>
+    <div class="shipping-options">
+      <label class="shipping-option">
+        <input type="radio" name="shippingMethod" value="self_pickup" checked>
+        <span class="shipping-card">
+          <span class="shipping-icon">📦</span>
+          <span class="shipping-label" data-i18n="shipSelfPickup">איסוף עצמי</span>
+        </span>
+      </label>
+      <label class="shipping-option">
+        <input type="radio" name="shippingMethod" value="shipping">
+        <span class="shipping-card">
+          <span class="shipping-icon">🚚</span>
+          <span class="shipping-label" data-i18n="shipShipping">משלוח</span>
+        </span>
+      </label>
+      <label class="shipping-option">
+        <input type="radio" name="shippingMethod" value="telefire_delivery">
+        <span class="shipping-card">
+          <span class="shipping-icon">🚐</span>
+          <span class="shipping-label" data-i18n="shipTelefire">משלוח ע"י טלפייר (שלמה/עמוס)</span>
+        </span>
+      </label>
+      <label class="shipping-option">
+        <input type="radio" name="shippingMethod" value="vendor_to_site">
+        <span class="shipping-card">
+          <span class="shipping-icon">🏗️</span>
+          <span class="shipping-label" data-i18n="shipVendorToSite">אספקה מספק לשטח</span>
+        </span>
+      </label>
+    </div>
+  </section>
+
+  <!-- SITE CONTACT -->
+  <section class="card">
+    <div class="card-title" data-i18n="contactTitle">איש קשר בשטח</div>
+    <div class="fields">
+      <div class="field">
+        <label for="contactName"><span data-i18n="contactNameLabel">שם איש קשר</span></label>
+        <input id="contactName" class="input" type="text" data-i18n-placeholder="contactNamePlaceholder" placeholder="שם מלא">
+      </div>
+      <div class="field">
+        <label for="contactPhone"><span data-i18n="contactPhoneLabel">טלפון</span></label>
+        <input id="contactPhone" class="input" type="tel" data-i18n-placeholder="contactPhonePlaceholder" placeholder="050-1234567" dir="ltr">
+      </div>
+      <div class="field" style="grid-column: 1 / -1;">
+        <label for="contactAddress"><span data-i18n="contactAddressLabel">כתובת</span></label>
+        <input id="contactAddress" class="input" type="text" data-i18n-placeholder="contactAddressPlaceholder" placeholder="רחוב, מספר, עיר">
+      </div>
+    </div>
+  </section>
+
   <!-- PRODUCTS -->
   <section class="card products-card">
     <div class="products-header">
@@ -1008,6 +1119,12 @@ html, body {
       <span style="font-size:20px;">＋</span>
       <span data-i18n="addRow">הוסף שורה</span>
     </button>
+  </section>
+
+  <!-- NOTES -->
+  <section class="card">
+    <div class="card-title" data-i18n="notesTitle">הערות</div>
+    <textarea id="notes" class="input notes-textarea" rows="3" data-i18n-placeholder="notesPlaceholder" placeholder="הוסף הערות חופשיות, הוראות מיוחדות, או כל מידע נוסף..."></textarea>
   </section>
 
   <!-- SUBMIT BAR -->
@@ -1090,6 +1207,14 @@ themeToggle.addEventListener('click', () => {
 
 applyTheme(getStoredTheme());
 
+// Shipping methods — Hebrew labels always sent to webhook (email is in Hebrew)
+const SHIPPING_LABELS_HE = {
+  self_pickup: 'איסוף עצמי',
+  shipping: 'משלוח',
+  telefire_delivery: 'משלוח ע"י טלפייר (שלמה/עמוס)',
+  vendor_to_site: 'אספקה מספק לשטח'
+};
+
 // ============================================
 // I18N — LANGUAGE SYSTEM (Hebrew / Russian)
 // ============================================
@@ -1111,6 +1236,26 @@ const I18N = {
     operatorLabel: 'שם המפעיל',
     fullNamePlaceholder: 'שם מלא',
     deliveryDateLabel: 'תאריך אספקה מבוקש',
+
+    // Shipping
+    shippingTitle: 'אופן משלוח',
+    shipSelfPickup: 'איסוף עצמי',
+    shipShipping: 'משלוח',
+    shipTelefire: 'משלוח ע"י טלפייר (שלמה/עמוס)',
+    shipVendorToSite: 'אספקה מספק לשטח',
+
+    // Contact
+    contactTitle: 'איש קשר בשטח',
+    contactNameLabel: 'שם איש קשר',
+    contactNamePlaceholder: 'שם מלא',
+    contactPhoneLabel: 'טלפון',
+    contactPhonePlaceholder: '050-1234567',
+    contactAddressLabel: 'כתובת',
+    contactAddressPlaceholder: 'רחוב, מספר, עיר',
+
+    // Notes
+    notesTitle: 'הערות',
+    notesPlaceholder: 'הוסף הערות חופשיות, הוראות מיוחדות, או כל מידע נוסף...',
 
     // Date quick buttons
     dateToday: 'היום',
@@ -1197,6 +1342,26 @@ const I18N = {
     operatorLabel: 'Оператор',
     fullNamePlaceholder: 'Полное имя',
     deliveryDateLabel: 'Дата поставки',
+
+    // Shipping
+    shippingTitle: 'Способ доставки',
+    shipSelfPickup: 'Самовывоз',
+    shipShipping: 'Доставка',
+    shipTelefire: 'Доставка от Telefire (Шломо/Амос)',
+    shipVendorToSite: 'Поставка от поставщика на объект',
+
+    // Contact
+    contactTitle: 'Контактное лицо на объекте',
+    contactNameLabel: 'Имя контактного лица',
+    contactNamePlaceholder: 'Полное имя',
+    contactPhoneLabel: 'Телефон',
+    contactPhonePlaceholder: '050-1234567',
+    contactAddressLabel: 'Адрес',
+    contactAddressPlaceholder: 'Улица, номер, город',
+
+    // Notes
+    notesTitle: 'Примечания',
+    notesPlaceholder: 'Добавьте свободные примечания, особые инструкции или любую дополнительную информацию...',
 
     // Date quick buttons
     dateToday: 'Сегодня',
@@ -1308,9 +1473,26 @@ function applyLang(lang) {
 
   // Refresh dynamic content
   rebuildCategoryOptionsInExistingRows();
+  refreshExistingRowDescriptions();
   updateSummary();
   refreshShieldChipLabels();
   refreshSkuPlaceholders();
+}
+
+function refreshExistingRowDescriptions() {
+  tbody.querySelectorAll('tr').forEach(tr => {
+    const descInput = tr.querySelector('.desc-input');
+    if (!descInput) return;
+    const sku = descInput.dataset.sku;
+    if (sku) {
+      const product = skuMap[sku.toUpperCase()];
+      if (product) {
+        descInput.value = productDesc(product);
+      }
+    }
+    // Update the empty placeholder too
+    descInput.placeholder = t('noDesc');
+  });
 }
 
 function rebuildCategoryOptionsInExistingRows() {
@@ -1377,76 +1559,83 @@ function catColor(key) {
 // PRODUCTS
 // ============================================
 const PRODUCTS = [
-  {sku:"ADR-7000/1", desc:"רכזת אנלוגית ל-127 כתובות", cat:"panels"},
-  {sku:"ADR-7001", desc:"מכלול הרחבה ל- 7000", cat:"panels"},
-  {sku:"ADR-7002", desc:"מעגל קו אנלוגי ל- 127 כתובות REV-B", cat:"panels"},
-  {sku:"RM-7000", desc:"לוח משנה לרכזות אנלוגיות 7000 עברית", cat:"panels"},
-  {sku:"ADR-7000/4", desc:"רכזת אנלוגית ל-508 כתובות", cat:"panels"},
-  {sku:"ADR-7000/8", desc:"רכזת אנלוגית 1016 כתובות", cat:"panels"},
+  {sku:"ADR-7000/1", desc:"רכזת אנלוגית ל-127 כתובות", descRu:"Аналоговая панель на 127 адресов", cat:"panels"},
+  {sku:"ADR-7001", desc:"מכלול הרחבה ל- 7000", descRu:"Модуль расширения для 7000", cat:"panels"},
+  {sku:"ADR-7002", desc:"מעגל קו אנלוגי ל- 127 כתובות REV-B", descRu:"Аналоговый шлейф на 127 адресов REV-B", cat:"panels"},
+  {sku:"RM-7000", desc:"לוח משנה לרכזות אנלוגיות 7000 עברית", descRu:"Дополнительная плата для аналоговых панелей 7000 (иврит)", cat:"panels"},
+  {sku:"ADR-7000/4", desc:"רכזת אנלוגית ל-508 כתובות", descRu:"Аналоговая панель на 508 адресов", cat:"panels"},
+  {sku:"ADR-7000/8", desc:"רכזת אנלוגית 1016 כתובות", descRu:"Аналоговая панель на 1016 адресов", cat:"panels"},
 
-  {sku:"TFB-180", desc:"בסיס לגלאי רגיל + כתובתי", cat:"detectors"},
-  {sku:"TFB-180CA", desc:"מתאם לבסיס גלאי -חדש-", cat:"detectors"},
-  {sku:"TFB-CAB", desc:"תושבת בסיס גלאי ללוח חשמל", cat:"detectors"},
-  {sku:"TFO-480A", desc:"גלאי פוטואלקטרי כתובתי אנלוגי", cat:"detectors"},
-  {sku:"DTH-800", desc:"קופסא+בסיס לתעלות מז\"א לגלאי אנלוגי/קונבנציונלי", cat:"detectors"},
+  {sku:"TFB-180", desc:"בסיס לגלאי רגיל + כתובתי", descRu:"База для извещателя обычного и адресного", cat:"detectors"},
+  {sku:"TFB-180CA", desc:"מתאם לבסיס גלאי -חדש-", descRu:"Адаптер для базы извещателя — новый", cat:"detectors"},
+  {sku:"TFB-CAB", desc:"תושבת בסיס גלאי ללוח חשמל", descRu:"Кронштейн базы извещателя для электрощита", cat:"detectors"},
+  {sku:"TFO-480A", desc:"גלאי פוטואלקטרי כתובתי אנלוגי", descRu:"Аналоговый адресный фотоэлектрический извещатель", cat:"detectors"},
+  {sku:"DTH-800", desc:"קופסא+בסיס לתעלות מז\"א לגלאי אנלוגי/קונבנציונלי", descRu:"Корпус и база для каналов кондиционирования (аналоговый/обычный извещатель)", cat:"detectors"},
 
-  {sku:"TFL-1AN", desc:"מנורת סימון מהבהבת למע' אנלוגית", cat:"alarms"},
-  {sku:"TFS-314", desc:"צופר-נצנץ פנימי לבן ערוצים נפרדים (מרובע)", cat:"alarms"},
-  {sku:"TPB-800ASR", desc:"לחצן ניפוץ אנלוגי אסכרוני", cat:"alarms"},
-  {sku:"FLAP", desc:"מכסה מגן שקוף ללחצן", cat:"alarms"},
+  {sku:"TFL-1AN", desc:"מנורת סימון מהבהבת למע' אנלוגית", descRu:"Мигающая сигнальная лампа для аналоговой системы", cat:"alarms"},
+  {sku:"TFS-314", desc:"צופר-נצנץ פנימי לבן ערוצים נפרדים (מרובע)", descRu:"Внутренняя сирена-маячок белая, раздельные каналы (квадратная)", cat:"alarms"},
+  {sku:"TPB-800ASR", desc:"לחצן ניפוץ אנלוגי אסכרוני", descRu:"Адресная ручная аналоговая кнопка пожарной тревоги", cat:"alarms"},
+  {sku:"FLAP", desc:"מכסה מגן שקוף ללחצן", descRu:"Прозрачная защитная крышка для кнопки", cat:"alarms"},
 
-  {sku:"TFP-100T", desc:"שקע לטלפון כבאים", cat:"phones"},
-  {sku:"TFP-7000", desc:"עמדת שליטה לטלפון כבאים ל- 24 שפופרות", cat:"phones"},
-  {sku:"TFP-7000/24", desc:"הרחבה לטלפון כבאים עד ל- 24 כתובות", cat:"phones"},
-  {sku:"TFP-806", desc:"מכלול שקע כתובתי לטלפון כבאים", cat:"phones"},
-  {sku:"TFP-1CP", desc:"עמדת שפופרת קבועה כתובתית טלפייר", cat:"phones"},
-  {sku:"TFP-1", desc:"שפופרת לטלפון כבאים", cat:"phones"},
-  {sku:"TFP-76C", desc:"יחידת אחסון לעד 6 שפופרות (ריקה) לרכזת 7000", cat:"phones"},
+  {sku:"TFP-100T", desc:"שקע לטלפון כבאים", descRu:"Розетка для пожарного телефона", cat:"phones"},
+  {sku:"TFP-7000", desc:"עמדת שליטה לטלפון כבאים ל- 24 שפופרות", descRu:"Пульт управления пожарным телефоном на 24 трубки", cat:"phones"},
+  {sku:"TFP-7000/24", desc:"הרחבה לטלפון כבאים עד ל- 24 כתובות", descRu:"Расширение пожарного телефона до 24 адресов", cat:"phones"},
+  {sku:"TFP-806", desc:"מכלול שקע כתובתי לטלפון כבאים", descRu:"Адресная розетка для пожарного телефона (модуль)", cat:"phones"},
+  {sku:"TFP-1CP", desc:"עמדת שפופרת קבועה כתובתית טלפייר", descRu:"Стационарная адресная трубка Telefire", cat:"phones"},
+  {sku:"TFP-1", desc:"שפופרת לטלפון כבאים", descRu:"Трубка пожарного телефона", cat:"phones"},
+  {sku:"TFP-76C", desc:"יחידת אחסון לעד 6 שפופרות (ריקה) לרכזת 7000", descRu:"Блок хранения до 6 трубок (пустой) для панели 7000", cat:"phones"},
 
-  {sku:"TFV-400", desc:"מערכת כריזת חירום, 6 אזורים, 2x200W", cat:"audio"},
-  {sku:"TFMIC-30400A", desc:"PKM1+ECM-30A - מיקרופון חירום בקופסא (PTT) עבור TFV-400", cat:"audio"},
-  {sku:"TLS-T1001", desc:"שופר IP66 30W", cat:"audio"},
-  {sku:"TFAB-160W", desc:"SB-624EI - מגבר בוסטר 160 וואט", cat:"audio"},
-  {sku:"TFEVS-6400", desc:"כריזת חירום משולבת 250 וואט (6 אזורים, 6 הודעות)", cat:"audio"},
-  {sku:"BSS-SP0015", desc:"שופר חיצוני 15W וואט", cat:"audio"},
-  {sku:"BSS-SWG6C", desc:"רמקול 6\" תקרתי גריל לבן", cat:"audio"},
-  {sku:"BSS-LB10", desc:"רמקול קיר 6W לבן קטן", cat:"audio"},
-  {sku:"BSS-SP0610", desc:"רמקול פרוז'קטור 6-10W וואט", cat:"audio"},
-  {sku:"TLS-SC30", desc:"SC-30 - רמקול שופר 30 וואט IP66", cat:"audio"},
-  {sku:"TLS-CL6RIN", desc:"HSR127T - רמקול שקוע 6 אינץ' 0.5-1-2 וואט", cat:"audio"},
-  {sku:"TLS-W", desc:"רמקול קיר 3 אינץ' 0.5-1-2-4 וואט (25/100 וולט)", cat:"audio"},
+  {sku:"TFV-400", desc:"מערכת כריזת חירום, 6 אזורים, 2x200W", descRu:"Система аварийного оповещения, 6 зон, 2×200 Вт", cat:"audio"},
+  {sku:"TFMIC-30400A", desc:"PKM1+ECM-30A - מיקרופון חירום בקופסא (PTT) עבור TFV-400", descRu:"PKM1+ECM-30A — аварийный микрофон в корпусе (PTT) для TFV-400", cat:"audio"},
+  {sku:"TLS-T1001", desc:"שופר IP66 30W", descRu:"Рупорный громкоговоритель IP66, 30 Вт", cat:"audio"},
+  {sku:"TFAB-160W", desc:"SB-624EI - מגבר בוסטר 160 וואט", descRu:"SB-624EI — усилитель-бустер 160 Вт", cat:"audio"},
+  {sku:"TFEVS-6400", desc:"כריזת חירום משולבת 250 וואט (6 אזורים, 6 הודעות)", descRu:"Комбинированное аварийное оповещение 250 Вт (6 зон, 6 сообщений)", cat:"audio"},
+  {sku:"BSS-SP0015", desc:"שופר חיצוני 15W וואט", descRu:"Внешний рупорный громкоговоритель 15 Вт", cat:"audio"},
+  {sku:"BSS-SWG6C", desc:"רמקול 6\" תקרתי גריל לבן", descRu:"Потолочный динамик 6\" с белой решёткой", cat:"audio"},
+  {sku:"BSS-LB10", desc:"רמקול קיר 6W לבן קטן", descRu:"Настенный динамик 6 Вт, маленький, белый", cat:"audio"},
+  {sku:"BSS-SP0610", desc:"רמקול פרוז'קטור 6-10W וואט", descRu:"Динамик-прожектор 6–10 Вт", cat:"audio"},
+  {sku:"TLS-SC30", desc:"SC-30 - רמקול שופר 30 וואט IP66", descRu:"SC-30 — рупорный громкоговоритель 30 Вт IP66", cat:"audio"},
+  {sku:"TLS-CL6RIN", desc:"HSR127T - רמקול שקוע 6 אינץ' 0.5-1-2 וואט", descRu:"HSR127T — встраиваемый динамик 6\" 0.5–1–2 Вт", cat:"audio"},
+  {sku:"TLS-W", desc:"רמקול קיר 3 אינץ' 0.5-1-2-4 וואט (25/100 וולט)", descRu:"Настенный динамик 3\" 0.5–1–2–4 Вт (25/100 В)", cat:"audio"},
 
-  {sku:"ADR-705", desc:"מעגל כניסה למפסקי זרימה 2 כניסות ADR-705 REV-A", cat:"modules"},
-  {sku:"ADR-805A", desc:"מעגל כניסה למפסקי זרימה אסכרוני ADR-805A REV C2", cat:"modules"},
-  {sku:"ADR-723", desc:"מודול מבוא/מוצא ADR-723", cat:"modules"},
-  {sku:"ADR-741", desc:"כרטיס ממסר למערכת כתובתית אנלוגית ADR-741 REV-A", cat:"modules"},
-  {sku:"LON-7000", desc:"כרטיס תקשורת 7000 MASTER/SLAVE", cat:"modules"},
+  {sku:"ADR-705", desc:"מעגל כניסה למפסקי זרימה 2 כניסות ADR-705 REV-A", descRu:"Входной модуль для реле потока, 2 входа, ADR-705 REV-A", cat:"modules"},
+  {sku:"ADR-805A", desc:"מעגל כניסה למפסקי זרימה אסכרוני ADR-805A REV C2", descRu:"Адресный входной модуль для реле потока ADR-805A REV C2", cat:"modules"},
+  {sku:"ADR-723", desc:"מודול מבוא/מוצא ADR-723", descRu:"Модуль ввода/вывода ADR-723", cat:"modules"},
+  {sku:"ADR-741", desc:"כרטיס ממסר למערכת כתובתית אנלוגית ADR-741 REV-A", descRu:"Релейная плата для аналоговой адресной системы ADR-741 REV-A", cat:"modules"},
+  {sku:"LON-7000", desc:"כרטיס תקשורת 7000 MASTER/SLAVE", descRu:"Коммуникационная плата 7000 MASTER/SLAVE", cat:"modules"},
 
-  {sku:"TB-90", desc:"מצבר 12V 9AH", cat:"power"},
-  {sku:"TB-70", desc:"מצבר 12V 7AH", cat:"power"},
-  {sku:"TPS-74A", desc:"ספק כוח כתובתי אנלוגי מזווד 7000", cat:"power"},
+  {sku:"TB-90", desc:"מצבר 12V 9AH", descRu:"Аккумулятор 12 В, 9 А·ч", cat:"power"},
+  {sku:"TB-70", desc:"מצבר 12V 7AH", descRu:"Аккумулятор 12 В, 7 А·ч", cat:"power"},
+  {sku:"TPS-74A", desc:"ספק כוח כתובתי אנלוגי מזווד 7000", descRu:"Адресный аналоговый блок питания в корпусе для 7000", cat:"power"},
 
-  {sku:"BOX-DI4130", desc:"קופסא DI-4-130 360*250*130 IP-65 מכסה אטום", cat:"accessories"},
-  {sku:"DTH1077", desc:"קופסא D-2 80X150X190 מכסה אטום עם כניסות", cat:"accessories"},
-  {sku:"TDH-607", desc:"מגנט קיר אוחז לדלת (50 ק\"ג) 11FF פלסטי", cat:"accessories"},
-  {sku:"TDM-500IN", desc:"חייגן אוטומטי קווי חכם NEW", cat:"accessories"},
+  {sku:"BOX-DI4130", desc:"קופסא DI-4-130 360*250*130 IP-65 מכסה אטום", descRu:"Корпус DI-4-130, 360×250×130, IP-65, герметичная крышка", cat:"accessories"},
+  {sku:"DTH1077", desc:"קופסא D-2 80X150X190 מכסה אטום עם כניסות", descRu:"Корпус D-2, 80×150×190, герметичная крышка с вводами", cat:"accessories"},
+  {sku:"TDH-607", desc:"מגנט קיר אוחז לדלת (50 ק\"ג) 11FF פלסטי", descRu:"Настенный магнит-держатель двери (50 кг) 11FF, пластик", cat:"accessories"},
+  {sku:"TDM-500IN", desc:"חייגן אוטומטי קווי חכם NEW", descRu:"Автоматический проводной интеллектуальный коммуникатор (новый)", cat:"accessories"},
 
-  {sku:"TFC408", desc:"כבל גילוי אש 0.8*4 אדום - חבילות של 200 מטר", cat:"cables"},
-  {sku:"TFC208", desc:"כבל גילוי אש 0.8*2 אדום - חבילות של 200 מטר", cat:"cables"},
-  {sku:"FRC0408", desc:"כבל חסין אש 4X0.8 כתום - כל גיד בצבע אחר", cat:"cables"},
-  {sku:"TFC201008R", desc:"כבל גילוי אש 0.8*2*10 אדום-חבילה של 200-250 מטר", cat:"cables"},
-  {sku:"TFCAT7S", desc:"כבל CAT7 4X2X23/1 (ג'גה) מסוכך", cat:"cables"},
+  {sku:"TFC408", desc:"כבל גילוי אש 0.8*4 אדום - חבילות של 200 מטר", descRu:"Кабель пожарной сигнализации 0.8×4, красный — упаковки по 200 м", cat:"cables"},
+  {sku:"TFC208", desc:"כבל גילוי אש 0.8*2 אדום - חבילות של 200 מטר", descRu:"Кабель пожарной сигнализации 0.8×2, красный — упаковки по 200 м", cat:"cables"},
+  {sku:"FRC0408", desc:"כבל חסין אש 4X0.8 כתום - כל גיד בצבע אחר", descRu:"Огнестойкий кабель 4×0.8, оранжевый — каждая жила разного цвета", cat:"cables"},
+  {sku:"TFC201008R", desc:"כבל גילוי אש 0.8*2*10 אדום-חבילה של 200-250 מטר", descRu:"Кабель пожарной сигнализации 0.8×2×10, красный — упаковка 200–250 м", cat:"cables"},
+  {sku:"TFCAT7S", desc:"כבל CAT7 4X2X23/1 (ג'גה) מסוכך", descRu:"Кабель CAT7 4×2×23/1 экранированный", cat:"cables"},
 
-  {sku:"TFC-0020", desc:"צינור מריכף 20 מ\"מ אדום - חבילה של 100 מטר", cat:"conduits"},
-  {sku:"TMRR34", desc:"צינור מרירון תיקני 20 מ\"מ - יחידה של 3 מטר", cat:"conduits"},
-  {sku:"TFC-020", desc:"שלה פלסטיק לצינור 20 מ\"מ - חבילה של 100 יח'", cat:"conduits"},
-  {sku:"BCF-SR11R", desc:"צינור שרשורי אדום PG11 - חבילה של 30 מטר", cat:"conduits"},
-  {sku:"BCF-SR9R", desc:"צינור שרשורי אדום PG9 - חבילה של 30 מטר", cat:"conduits"},
-  {sku:"BCF-206060", desc:"תעלה P.V.C 60*60 עם מכסה - מטר", cat:"conduits"},
-  {sku:"TFC-PT12060", desc:"תעלת פי וי סי 60*120 מ\"מ", cat:"conduits"}
+  {sku:"TFC-0020", desc:"צינור מריכף 20 מ\"מ אדום - חבילה של 100 מטר", descRu:"Гибкая труба 20 мм, красная — упаковка 100 м", cat:"conduits"},
+  {sku:"TMRR34", desc:"צינור מרירון תיקני 20 מ\"מ - יחידה של 3 מטר", descRu:"Стандартная жёсткая труба 20 мм — отрезки по 3 м", cat:"conduits"},
+  {sku:"TFC-020", desc:"שלה פלסטיק לצינור 20 מ\"מ - חבילה של 100 יח'", descRu:"Пластиковый хомут для трубы 20 мм — упаковка 100 шт", cat:"conduits"},
+  {sku:"BCF-SR11R", desc:"צינור שרשורי אדום PG11 - חבילה של 30 מטר", descRu:"Гофрированная труба, красная PG11 — упаковка 30 м", cat:"conduits"},
+  {sku:"BCF-SR9R", desc:"צינור שרשורי אדום PG9 - חבילה של 30 מטר", descRu:"Гофрированная труба, красная PG9 — упаковка 30 м", cat:"conduits"},
+  {sku:"BCF-206060", desc:"תעלה P.V.C 60*60 עם מכסה - מטר", descRu:"Кабель-канал ПВХ 60×60 с крышкой — за метр", cat:"conduits"},
+  {sku:"TFC-PT12060", desc:"תעלת פי וי סי 60*120 מ\"מ", descRu:"Кабель-канал ПВХ 60×120 мм", cat:"conduits"}
 ];
 
 const skuMap = Object.fromEntries(PRODUCTS.map(p => [p.sku.toUpperCase(), p]));
+
+// Get product description in current UI language (falls back to Hebrew)
+function productDesc(product) {
+  if (!product) return '';
+  if (currentLang === 'ru' && product.descRu) return product.descRu;
+  return product.desc;
+}
 
 // ============================================
 // ELEMENTS
@@ -1536,7 +1725,8 @@ function rebuildModalList() {
   modalState.options = PRODUCTS.filter(p => p.cat === cat && (
     !query ||
     p.sku.toLowerCase().includes(query) ||
-    p.desc.toLowerCase().includes(query)
+    p.desc.toLowerCase().includes(query) ||
+    (p.descRu && p.descRu.toLowerCase().includes(query))
   ));
 
   skuModalCount.textContent = `(${modalState.options.length} ${t('modalProducts')})`;
@@ -1558,7 +1748,7 @@ function rebuildModalList() {
     opt.innerHTML = `
       <div class="sku-option-text">
         <div class="sku-option-sku">${p.sku}</div>
-        <div class="sku-option-desc">${p.desc}</div>
+        <div class="sku-option-desc">${productDesc(p)}</div>
       </div>
       <span class="sku-option-arrow">←</span>
     `;
@@ -1680,7 +1870,8 @@ function addRow() {
     if (!cat) return;
     openSkuModal(cat, (product) => {
       skuInput.value = product.sku;
-      descInput.value = product.desc;
+      descInput.value = productDesc(product);
+      descInput.dataset.sku = product.sku;
       if (!qtyInput.value) qtyInput.focus();
       updateSummary();
     });
@@ -1756,12 +1947,7 @@ document.getElementById('addRowBtn').addEventListener('click', () => {
 
 document.getElementById('resetBtn').addEventListener('click', () => {
   if (!confirm(t('confirmReset'))) return;
-  document.getElementById('projectName').value = '';
-  document.getElementById('projectManager').value = '';
-  document.getElementById('operator').value = '';
-  document.getElementById('deliveryDate').value = '';
-  tbody.innerHTML = '';
-  addRow(); addRow(); addRow();
+  resetFormAfterSuccess();
 });
 
 document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -1817,6 +2003,14 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     byCategory[p.category] = (byCategory[p.category] || 0) + p.qty;
   });
 
+  // Collect new fields
+  const shippingMethodKey = (document.querySelector('input[name="shippingMethod"]:checked') || {}).value || 'self_pickup';
+  const shippingMethodLabel = SHIPPING_LABELS_HE[shippingMethodKey] || shippingMethodKey;
+  const contactName = document.getElementById('contactName').value.trim();
+  const contactPhone = document.getElementById('contactPhone').value.trim();
+  const contactAddress = document.getElementById('contactAddress').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
   const payload = {
     submittedAt: new Date().toISOString(),
     project: {
@@ -1825,6 +2019,16 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
       operator: operator,
       deliveryDate: deliveryDate
     },
+    shipping: {
+      method: shippingMethodLabel,
+      methodKey: shippingMethodKey
+    },
+    contact: {
+      name: contactName,
+      phone: contactPhone,
+      address: contactAddress
+    },
+    notes: notes,
     products,
     summary: {
       lines: products.length,
@@ -1924,8 +2128,15 @@ function resetFormAfterSuccess() {
   document.getElementById('projectManager').value = '';
   document.getElementById('operator').value = '';
   document.getElementById('deliveryDate').value = '';
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactPhone').value = '';
+  document.getElementById('contactAddress').value = '';
+  document.getElementById('notes').value = '';
+  const defaultShipping = document.querySelector('input[name="shippingMethod"][value="self_pickup"]');
+  if (defaultShipping) defaultShipping.checked = true;
   tbody.innerHTML = '';
   addRow(); addRow(); addRow();
+  updateActiveQuickButton();
 }
 
 // Banner button handlers
@@ -1945,72 +2156,107 @@ function buildPrintArea(payload) {
   const formattedDate = payload.project.deliveryDate
     ? payload.project.deliveryDate.split('-').reverse().join('/')
     : '';
+  const locale = currentLang === 'ru' ? 'ru-RU' : 'he-IL';
   const submittedDate = new Date(payload.submittedAt);
-  const submittedStr = submittedDate.toLocaleString('he-IL', {
+  const submittedStr = submittedDate.toLocaleString(locale, {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit'
   });
+  const dir = currentLang === 'ru' ? 'ltr' : 'rtl';
+  const generatedLabel = currentLang === 'ru' ? 'Создано:' : 'הופק:';
+  const orderLabel = currentLang === 'ru' ? 'Заказ для проекта' : 'הזמנה לפרויקט';
 
-  const productRows = payload.products.map((p, i) => `
+  // For print: show desc in current UI language by looking up the sku
+  const productRows = payload.products.map((p, i) => {
+    const productLookup = skuMap[p.sku.toUpperCase()];
+    const localizedDesc = productLookup ? productDesc(productLookup) : p.desc;
+    const localizedCategory = t('cat_' + p.categoryKey) || p.category;
+    return `
     <tr>
       <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-weight:bold;">${i + 1}</td>
       <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-family:monospace;font-weight:bold;">${escapeHtml(p.sku)}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-size:12px;">${escapeHtml(p.category)}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #ddd;">${escapeHtml(p.desc)}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;font-size:12px;">${escapeHtml(localizedCategory)}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid #ddd;">${escapeHtml(localizedDesc)}</td>
       <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;font-weight:bold;">${p.qty}</td>
       <td style="padding:8px 10px;border-bottom:1px solid #ddd;text-align:center;font-size:11px;">${p.shield ? '🛡️ SHIELD' : '—'}</td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
 
   printArea.innerHTML = `
-    <div style="font-family:Arial,sans-serif;direction:rtl;color:#000;max-width:800px;margin:0 auto;">
+    <div style="font-family:Arial,sans-serif;direction:${dir};color:#000;max-width:800px;margin:0 auto;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #172B54;padding-bottom:14px;margin-bottom:20px;">
         <div>
-          <div style="font-size:24px;font-weight:bold;color:#172B54;">טלפייר</div>
-          <div style="font-size:11px;color:#666;letter-spacing:0.5px;">TELEFIRE · מערכות גילוי אש וכיבוי</div>
+          <div style="font-size:24px;font-weight:bold;color:#172B54;">${t('brandName')}</div>
+          <div style="font-size:11px;color:#666;letter-spacing:0.5px;">${t('brandTagline')}</div>
         </div>
-        <div style="text-align:left;">
-          <div style="font-size:16px;font-weight:bold;color:#CC2128;">הזמנה לפרויקט</div>
-          <div style="font-size:11px;color:#666;">הופק: ${submittedStr}</div>
+        <div style="text-align:${dir === 'rtl' ? 'left' : 'right'};">
+          <div style="font-size:16px;font-weight:bold;color:#CC2128;">${orderLabel}</div>
+          <div style="font-size:11px;color:#666;">${generatedLabel} ${submittedStr}</div>
         </div>
       </div>
 
       <div style="background:#F4F6FA;padding:16px;border-radius:8px;margin-bottom:18px;">
-        <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:10px;">פרטי הפרויקט</div>
+        <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:10px;">${t('projectDetailsTitle')}</div>
         <table style="width:100%;font-size:13px;">
           <tr>
             <td style="padding:4px 0;width:50%;">
-              <div style="color:#666;font-size:11px;">שם הפרויקט</div>
+              <div style="color:#666;font-size:11px;">${t('projectNameLabel')}</div>
               <div style="font-weight:bold;color:#172B54;font-size:14px;">${escapeHtml(payload.project.name)}</div>
             </td>
             <td style="padding:4px 0;width:50%;">
-              <div style="color:#666;font-size:11px;">תאריך אספקה</div>
+              <div style="color:#666;font-size:11px;">${t('deliveryDateLabel')}</div>
               <div style="font-weight:bold;color:#172B54;font-size:14px;">${escapeHtml(formattedDate)}</div>
             </td>
           </tr>
           <tr>
             <td style="padding:4px 0;">
-              <div style="color:#666;font-size:11px;">מנהל הפרויקט</div>
+              <div style="color:#666;font-size:11px;">${t('projectManagerLabel')}</div>
               <div style="font-weight:600;">${escapeHtml(payload.project.manager)}</div>
             </td>
             <td style="padding:4px 0;">
-              <div style="color:#666;font-size:11px;">מפעיל</div>
+              <div style="color:#666;font-size:11px;">${t('operatorLabel')}</div>
               <div style="font-weight:600;">${escapeHtml(payload.project.operator)}</div>
             </td>
           </tr>
         </table>
       </div>
 
-      <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:8px;">רשימת מוצרים</div>
+      ${payload.shipping || payload.contact || payload.notes ? `
+      <div style="background:#F4F6FA;padding:16px;border-radius:8px;margin-bottom:18px;">
+        ${payload.shipping ? `
+        <div style="margin-bottom:${(payload.contact && (payload.contact.name || payload.contact.phone || payload.contact.address)) || payload.notes ? '12px' : '0'};">
+          <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:6px;">${t('shippingTitle')}</div>
+          <div style="font-weight:600;font-size:14px;color:#172B54;">${escapeHtml(t({self_pickup:'shipSelfPickup',shipping:'shipShipping',telefire_delivery:'shipTelefire',vendor_to_site:'shipVendorToSite'}[payload.shipping.methodKey] || 'shipSelfPickup'))}</div>
+        </div>` : ''}
+
+        ${payload.contact && (payload.contact.name || payload.contact.phone || payload.contact.address) ? `
+        <div style="margin-bottom:${payload.notes ? '12px' : '0'};border-top:1px solid #E2E8F0;padding-top:12px;">
+          <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:8px;">${t('contactTitle')}</div>
+          <table style="width:100%;font-size:13px;">
+            ${payload.contact.name ? `<tr><td style="padding:3px 0;width:35%;color:#666;font-size:11px;">${t('contactNameLabel')}</td><td style="padding:3px 0;font-weight:600;">${escapeHtml(payload.contact.name)}</td></tr>` : ''}
+            ${payload.contact.phone ? `<tr><td style="padding:3px 0;color:#666;font-size:11px;">${t('contactPhoneLabel')}</td><td style="padding:3px 0;font-weight:600;font-family:monospace;direction:ltr;text-align:${dir === 'rtl' ? 'right' : 'left'};">${escapeHtml(payload.contact.phone)}</td></tr>` : ''}
+            ${payload.contact.address ? `<tr><td style="padding:3px 0;color:#666;font-size:11px;">${t('contactAddressLabel')}</td><td style="padding:3px 0;font-weight:600;">${escapeHtml(payload.contact.address)}</td></tr>` : ''}
+          </table>
+        </div>` : ''}
+
+        ${payload.notes ? `
+        <div style="border-top:1px solid #E2E8F0;padding-top:12px;">
+          <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:6px;">${t('notesTitle')}</div>
+          <div style="font-size:13px;line-height:1.5;white-space:pre-wrap;">${escapeHtml(payload.notes)}</div>
+        </div>` : ''}
+      </div>
+      ` : ''}
+
+      <div style="font-size:11px;font-weight:bold;color:#CC2128;letter-spacing:0.5px;margin-bottom:8px;">${t('productsTitle')}</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:18px;">
         <thead>
           <tr style="background:#172B54;color:white;">
-            <th style="padding:8px 10px;text-align:right;font-weight:bold;">#</th>
-            <th style="padding:8px 10px;text-align:right;font-weight:bold;">מק"ט</th>
-            <th style="padding:8px 10px;text-align:right;font-weight:bold;">סוג</th>
-            <th style="padding:8px 10px;text-align:right;font-weight:bold;">תיאור</th>
-            <th style="padding:8px 10px;text-align:center;font-weight:bold;">כמות</th>
-            <th style="padding:8px 10px;text-align:center;font-weight:bold;">מגן</th>
+            <th style="padding:8px 10px;text-align:${dir === 'rtl' ? 'right' : 'left'};font-weight:bold;">#</th>
+            <th style="padding:8px 10px;text-align:${dir === 'rtl' ? 'right' : 'left'};font-weight:bold;">${t('colSku')}</th>
+            <th style="padding:8px 10px;text-align:${dir === 'rtl' ? 'right' : 'left'};font-weight:bold;">${t('colCategory')}</th>
+            <th style="padding:8px 10px;text-align:${dir === 'rtl' ? 'right' : 'left'};font-weight:bold;">${t('colDesc')}</th>
+            <th style="padding:8px 10px;text-align:center;font-weight:bold;">${t('colQty')}</th>
+            <th style="padding:8px 10px;text-align:center;font-weight:bold;">${t('shieldLabel')}</th>
           </tr>
         </thead>
         <tbody>${productRows}</tbody>
@@ -2018,17 +2264,13 @@ function buildPrintArea(payload) {
 
       <div style="background:#172B54;color:white;padding:14px 18px;border-radius:8px;display:flex;justify-content:space-between;">
         <div>
-          <div style="font-size:10px;opacity:0.8;letter-spacing:0.5px;">סה"כ שורות</div>
+          <div style="font-size:10px;opacity:0.8;letter-spacing:0.5px;">${t('bannerLines')}</div>
           <div style="font-size:20px;font-weight:bold;">${payload.summary.lines}</div>
         </div>
-        <div style="text-align:left;">
-          <div style="font-size:10px;opacity:0.8;letter-spacing:0.5px;">סה"כ כמות פריטים</div>
+        <div style="text-align:${dir === 'rtl' ? 'left' : 'right'};">
+          <div style="font-size:10px;opacity:0.8;letter-spacing:0.5px;">${t('bannerQty')}</div>
           <div style="font-size:20px;font-weight:bold;">${payload.summary.totalQty}</div>
         </div>
-      </div>
-
-      <div style="text-align:center;color:#999;font-size:10px;margin-top:20px;">
-        מסמך זה הופק מטופס ההזמנות הדיגיטלי של טלפייר
       </div>
     </div>
   `;
