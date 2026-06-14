@@ -211,6 +211,20 @@ html, body {
   line-height: 1.5;
 }
 
+/* ===== EDITABLE SKU FIELD (for 'other' category) ===== */
+.sku-input.sku-editable {
+  background: var(--input-bg);
+  cursor: text;
+  color: var(--text);
+  font-family: inherit;
+  text-align: right;
+}
+.sku-input.sku-editable:focus {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(204,33,40,0.15);
+}
+
 /* ===== SHIPPING OPTIONS ===== */
 .shipping-options {
   display: grid;
@@ -1276,6 +1290,7 @@ const I18N = {
     selectCategory: 'בחר סוג...',
     selectCategoryFirst: 'בחר סוג קודם',
     clickToSelectSku: 'לחץ לבחירת מק"ט',
+    otherSkuPlaceholder: 'הקלד תיאור פריט...',
     noDesc: '—',
 
     // Shield
@@ -1325,7 +1340,8 @@ const I18N = {
     cat_power: 'ספקי כוח ומצברים',
     cat_accessories: 'קופסאות ואביזרים',
     cat_cables: 'כבלים',
-    cat_conduits: 'צינורות ותעלות'
+    cat_conduits: 'צינורות ותעלות',
+    cat_other: 'אחר'
   },
 
   ru: {
@@ -1382,6 +1398,7 @@ const I18N = {
     selectCategory: 'Выберите тип...',
     selectCategoryFirst: 'Сначала выберите тип',
     clickToSelectSku: 'Нажмите для выбора артикула',
+    otherSkuPlaceholder: 'Введите описание товара...',
     noDesc: '—',
 
     // Shield
@@ -1431,7 +1448,8 @@ const I18N = {
     cat_power: 'Блоки питания и АКБ',
     cat_accessories: 'Корпуса и аксессуары',
     cat_cables: 'Кабели',
-    cat_conduits: 'Трубы и каналы'
+    cat_conduits: 'Трубы и каналы',
+    cat_other: 'Другое'
   }
 };
 
@@ -1482,7 +1500,15 @@ function applyLang(lang) {
 function refreshExistingRowDescriptions() {
   tbody.querySelectorAll('tr').forEach(tr => {
     const descInput = tr.querySelector('.desc-input');
-    if (!descInput) return;
+    const catSelect = tr.querySelector('.cat-select');
+    if (!descInput || !catSelect) return;
+
+    // For 'other' category - desc stays empty/dash
+    if (catSelect.value === 'other') {
+      descInput.placeholder = t('noDesc');
+      return;
+    }
+
     const sku = descInput.dataset.sku;
     if (sku) {
       const product = skuMap[sku.toUpperCase()];
@@ -1520,8 +1546,11 @@ function refreshShieldChipLabels() {
 function refreshSkuPlaceholders() {
   tbody.querySelectorAll('tr').forEach(tr => {
     const skuInput = tr.querySelector('.sku-input');
-    if (!skuInput) return;
-    if (skuInput.disabled) {
+    const catSelect = tr.querySelector('.cat-select');
+    if (!skuInput || !catSelect) return;
+    if (catSelect.value === 'other') {
+      skuInput.placeholder = t('otherSkuPlaceholder');
+    } else if (skuInput.disabled) {
       skuInput.placeholder = t('selectCategoryFirst');
     } else {
       skuInput.placeholder = t('clickToSelectSku');
@@ -1546,7 +1575,8 @@ const CATEGORIES = {
   power:       { label: "ספקי כוח ומצברים",  color: "#CA8A04", colorDark: "#FBBF24" },
   accessories: { label: "קופסאות ואביזרים",  color: "#475569", colorDark: "#94A3B8" },
   cables:      { label: "כבלים",              color: "#92400E", colorDark: "#D97706" },
-  conduits:    { label: "צינורות ותעלות",    color: "#DB2777", colorDark: "#F472B6" }
+  conduits:    { label: "צינורות ותעלות",    color: "#DB2777", colorDark: "#F472B6" },
+  other:       { label: "אחר",                color: "#64748B", colorDark: "#94A3B8" }
 };
 
 function catColor(key) {
@@ -1868,6 +1898,7 @@ function addRow() {
     if (skuInput.disabled) return;
     const cat = catSelect.value;
     if (!cat) return;
+    if (cat === 'other') return; // free-text input, no modal
     openSkuModal(cat, (product) => {
       skuInput.value = product.sku;
       descInput.value = productDesc(product);
@@ -1882,12 +1913,40 @@ function addRow() {
     const cat = catSelect.value;
     skuInput.value = '';
     descInput.value = '';
-    if (cat) {
+
+    if (cat === 'other') {
+      // Other category: SKU becomes free-text input, desc stays locked
       skuInput.disabled = false;
+      skuInput.removeAttribute('readonly');
+      skuInput.readOnly = false;
+      skuInput.placeholder = t('otherSkuPlaceholder');
+      skuInput.classList.add('sku-editable');
+      // Desc stays read-only and empty
+      descInput.readOnly = true;
+      descInput.setAttribute('readonly', '');
+      descInput.placeholder = t('noDesc');
+      descInput.classList.remove('desc-editable');
+    } else if (cat) {
+      skuInput.disabled = false;
+      skuInput.readOnly = true;
+      skuInput.setAttribute('readonly', '');
       skuInput.placeholder = t('clickToSelectSku');
+      skuInput.classList.remove('sku-editable');
+      // Reset desc to read-only (catalog mode)
+      descInput.readOnly = true;
+      descInput.setAttribute('readonly', '');
+      descInput.placeholder = t('noDesc');
+      descInput.classList.remove('desc-editable');
     } else {
       skuInput.disabled = true;
+      skuInput.readOnly = true;
+      skuInput.setAttribute('readonly', '');
       skuInput.placeholder = t('selectCategoryFirst');
+      skuInput.classList.remove('sku-editable');
+      descInput.readOnly = true;
+      descInput.setAttribute('readonly', '');
+      descInput.placeholder = t('noDesc');
+      descInput.classList.remove('desc-editable');
     }
     // Show/hide shield chip
     if (cat === 'panels') {
@@ -1898,6 +1957,9 @@ function addRow() {
     }
     updateSummary();
   });
+
+  // Update summary on SKU input change (matters for 'other' category)
+  skuInput.addEventListener('input', updateSummary);
 
   qtyInput.addEventListener('input', updateSummary);
 
@@ -1967,8 +2029,26 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   productRows.forEach(tr => {
     const cat = tr.querySelector('.cat-select').value;
     const sku = tr.querySelector('.sku-input').value.trim();
+    const desc = tr.querySelector('.desc-input').value.trim();
     const qty = parseInt(tr.querySelector('.qty-input').value, 10);
-    if (!cat && !sku && !qty) return;
+    if (!cat && !sku && !qty && !desc) return;
+
+    // Special handling for 'other' category
+    if (cat === 'other') {
+      if (!sku || !(qty > 0)) {
+        invalidRow = true; return;
+      }
+      products.push({
+        sku: '000',
+        desc: sku,
+        category: CATEGORIES.other.label,
+        categoryKey: 'other',
+        qty
+      });
+      return;
+    }
+
+    // Regular catalog products
     const product = skuMap[sku.toUpperCase()];
     if (!cat || !product || product.cat !== cat || !(qty > 0)) {
       invalidRow = true; return;
